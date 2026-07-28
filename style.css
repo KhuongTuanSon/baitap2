@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════════════════
+   STYLE.CSS — Các style tùy chỉnh bổ sung cho Tailwind
+   ═══════════════════════════════════════════════════════════ */
+
+/* --- Thanh cuộn (Scrollbar) --- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Cuộn mượt --- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* --- Hiệu ứng phóng to hình ảnh khi hover --- */
+.image-card img {
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              filter 0.5s ease;
+}
+.image-card:hover img {
+  transform: scale(1.08);
+}
+
+/* --- Lớp phủ gradient trên thẻ hình ảnh --- */
+.image-card .card-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.image-card:hover .card-overlay {
+  opacity: 1;
+}
+
+/* --- Nút hành động phía trên thẻ hình ảnh (tải/liên kết) --- */
+.image-card .card-actions {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.image-card:hover .card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Hiệu ứng lấp lánh skeleton khi đang tải --- */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* --- Hiệu ứng chuyển động thông báo Toast --- */
+.toast-enter {
+  animation: toastIn 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+.toast-exit {
+  animation: toastOut 0.3s ease-in forwards;
+}
+
+@keyframes toastIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+@keyframes toastOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.9);
+  }
+}
+
+/* --- Hiệu ứng xuất hiện lần lượt của các thẻ hình ảnh --- */
+.card-enter {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardIn 0.45s ease-out forwards;
+}
+
+@keyframes cardIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Viền focus cho hỗ trợ tiếp cận (accessibility) --- */
+*:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* --- Trạng thái nhấn (active) của nút gợi ý --- */
+.suggestion-pill:active {
+  transform: scale(0.95);
+}
+
+/* --- Màu khi bôi đen chữ (selection) --- */
+::selection {
+  background: rgba(139, 92, 246, 0.4);
+  color: white;
+}

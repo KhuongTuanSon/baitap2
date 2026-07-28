@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unsplash Image Search — Khám phá Ảnh đẹp</title>
+  <meta name="description" content="Tìm kiếm và khám phá hình ảnh chất lượng cao, miễn phí từ thư viện ảnh khổng lồ của Unsplash." />
+
+  <!-- Tailwind CSS v3 qua CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            surface: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            accent: {
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out forwards',
+            'slide-up': 'slideUp 0.5s ease-out forwards',
+            'pulse-slow': 'pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'shimmer': 'shimmer 1.8s infinite linear',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(24px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-surface-950 text-white font-sans min-h-screen antialiased">
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHẦN ĐẦU TRANG (HEADER)
+       ═══════════════════════════════════════════════════════ -->
+  <header class="relative overflow-hidden border-b border-white/5">
+    <!-- Hiệu ứng gradient nền phát sáng -->
+    <div class="absolute inset-0 bg-gradient-to-br from-accent-600/10 via-transparent to-blue-600/5 pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <!-- Thanh trên: Logo + Cài đặt -->
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-3">
+          <!-- Biểu tượng Logo -->
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-500 to-blue-500 flex items-center justify-center shadow-lg shadow-accent-500/25">
+            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight">
+            <span class="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">Unsplash Image Search</span>
+          </h1>
+        </div>
+
+        <!-- Nút Cài đặt (API Key) -->
+        <button
+          id="settings-toggle"
+          class="group relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-sm text-white/60 hover:text-white/90"
+          title="Cấu hình API Key"
+        >
+          <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span class="hidden sm:inline">API Key</span>
+          <!-- Chấm trạng thái -->
+          <span id="key-status-dot" class="w-2 h-2 rounded-full bg-red-400 transition-colors duration-300"></span>
+        </button>
+      </div>
+
+      <!-- Bảng cài đặt API Key (thu gọn/mở rộng) -->
+      <div id="settings-panel" class="hidden mb-6 animate-slide-up">
+        <div class="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+          <label for="api-key-input" class="block text-sm font-medium text-white/50 mb-2">
+            Unsplash Access Key
+          </label>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <input
+                type="password"
+                id="api-key-input"
+                placeholder="Dán Access Key của Unsplash vào đây..."
+                class="w-full px-4 py-3 rounded-xl bg-surface-900 border border-white/10 text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-accent-500/50 focus:border-accent-500/50 transition-all duration-300 text-sm pr-12"
+              />
+              <!-- Bật/tắt hiển thị key -->
+              <button id="toggle-key-visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors" title="Bật/tắt hiển thị">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
+            <button
+              id="save-key-btn"
+              class="px-6 py-3 rounded-xl bg-accent-600 hover:bg-accent-500 text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-accent-500/25 whitespace-nowrap"
+            >
+              Lưu Key
+            </button>
+          </div>
+          <p class="mt-3 text-xs text-white/30 leading-relaxed">
+            Lấy API key miễn phí tại
+            <a href="https://unsplash.com/developers" target="_blank" rel="noopener noreferrer" class="text-accent-400 hover:text-accent-300 underline underline-offset-2 transition-colors">
+              unsplash.com/developers
+            </a>
+            — Gói miễn phí: 50 yêu cầu/giờ.
+          </p>
+        </div>
+      </div>
+
+      <!-- Thanh Tìm kiếm -->
+      <div class="relative">
+        <div class="flex items-center gap-3">
+          <div class="relative flex-1 group">
+            <!-- Hiệu ứng phát sáng phía sau ô input -->
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-accent-500/20 to-blue-500/20 rounded-2xl opacity-0 group-focus-within:opacity-100 blur transition-opacity duration-500"></div>
+            <div class="relative flex items-center">
+              <svg class="absolute left-4 w-5 h-5 text-white/30 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Tìm kiếm hình ảnh đẹp... (ví dụ: núi, cà phê, hoàng hôn)"
+                class="w-full pl-12 pr-4 py-4 rounded-2xl bg-surface-900/80 border border-white/10 text-white placeholder-white/25 focus:outline-none focus:border-accent-500/40 transition-all duration-300 text-base"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+          <button
+            id="search-btn"
+            class="flex items-center gap-2 px-6 sm:px-8 py-4 rounded-2xl bg-gradient-to-r from-accent-600 to-blue-600 hover:from-accent-500 hover:to-blue-500 text-white font-semibold text-base transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/20 hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <span class="hidden sm:inline">Tìm kiếm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       NỘI DUNG CHÍNH
+       ═══════════════════════════════════════════════════════ -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+
+    <!-- Trạng thái chào mừng ban đầu -->
+    <div id="welcome-state" class="flex flex-col items-center justify-center py-20 sm:py-32 text-center animate-fade-in">
+      <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-accent-500/20 to-blue-500/20 border border-white/5 flex items-center justify-center mb-6">
+        <svg class="w-10 h-10 text-accent-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+        </svg>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white/80 mb-3">Khám phá Hình ảnh Đẹp</h2>
+      <p class="text-white/30 text-base max-w-md leading-relaxed">
+        Nhập từ khóa ở trên để tìm kiếm trong thư viện ảnh miễn phí tuyệt đẹp của Unsplash.
+      </p>
+      <!-- Các nút gợi ý tìm kiếm -->
+      <div class="flex flex-wrap items-center justify-center gap-2 mt-8">
+        <span class="text-xs text-white/20 mr-1">Thử:</span>
+        <button class="suggestion-pill px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-white/40 hover:text-white/70 hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer">nature</button>
+        <button class="suggestion-pill px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-white/40 hover:text-white/70 hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer">architecture</button>
+        <button class="suggestion-pill px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-white/40 hover:text-white/70 hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer">coffee</button>
+        <button class="suggestion-pill px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-white/40 hover:text-white/70 hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer">cats</button>
+        <button class="suggestion-pill px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-white/40 hover:text-white/70 hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer">space</button>
+      </div>
+    </div>
+
+    <!-- Trạng thái đang tải (skeleton UI) -->
+    <div id="loading-state" class="hidden">
+      <div class="flex items-center justify-center gap-3 mb-8">
+        <div class="relative w-8 h-8">
+          <div class="absolute inset-0 rounded-full border-2 border-accent-500/20"></div>
+          <div class="absolute inset-0 rounded-full border-2 border-transparent border-t-accent-500 animate-spin"></div>
+        </div>
+        <span class="text-white/40 text-sm font-medium">Đang tìm kiếm trên Unsplash...</span>
+      </div>
+      <div id="skeleton-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <!-- Các thẻ skeleton được tạo bởi JS -->
+      </div>
+    </div>
+
+    <!-- Trạng thái lỗi -->
+    <div id="error-state" class="hidden animate-fade-in">
+      <div class="max-w-lg mx-auto text-center py-16">
+        <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-5">
+          <svg class="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-red-300 mb-2">Đã xảy ra lỗi</h3>
+        <p id="error-message" class="text-white/40 text-sm leading-relaxed"></p>
+      </div>
+    </div>
+
+    <!-- Trạng thái không có kết quả -->
+    <div id="empty-state" class="hidden animate-fade-in">
+      <div class="max-w-lg mx-auto text-center py-16">
+        <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-5">
+          <svg class="w-8 h-8 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white/60 mb-2">Không tìm thấy hình ảnh</h3>
+        <p class="text-white/30 text-sm">Hãy thử từ khóa khác hoặc kiểm tra lại chính tả.</p>
+      </div>
+    </div>
+
+    <!-- Thanh thông tin kết quả -->
+    <div id="results-info" class="hidden flex items-center justify-between mb-6 animate-fade-in">
+      <p class="text-sm text-white/40">
+        Hiển thị <span id="results-count" class="text-white/70 font-medium"></span> kết quả cho
+        "<span id="results-query" class="text-accent-400 font-medium"></span>"
+      </p>
+    </div>
+
+    <!-- Lưới gallery hình ảnh -->
+    <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <!-- Các thẻ hình ảnh được tạo bởi JS -->
+    </div>
+
+    <!-- Phân trang -->
+    <div id="pagination" class="hidden flex items-center justify-center gap-3 mt-12 animate-fade-in">
+      <button
+        id="prev-btn"
+        class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/50 hover:bg-white/10 hover:text-white/80 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/5 disabled:hover:text-white/50"
+      >
+        ← Trang trước
+      </button>
+      <span id="page-info" class="text-sm text-white/30 px-3"></span>
+      <button
+        id="next-btn"
+        class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/50 hover:bg-white/10 hover:text-white/80 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/5 disabled:hover:text-white/50"
+      >
+        Trang sau →
+      </button>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CHÂN TRANG (FOOTER)
+       ═══════════════════════════════════════════════════════ -->
+  <footer class="border-t border-white/5 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/20">
+      <p>Được cung cấp bởi <a href="https://unsplash.com/developers" target="_blank" rel="noopener noreferrer" class="text-white/40 hover:text-white/60 transition-colors underline underline-offset-2">Unsplash API</a></p>
+      <p>Ảnh do các nhiếp ảnh gia trên <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" class="text-white/40 hover:text-white/60 transition-colors underline underline-offset-2">Unsplash</a> cung cấp</p>
+    </div>
+  </footer>
+
+  <!-- Khung chứa thông báo Toast -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
